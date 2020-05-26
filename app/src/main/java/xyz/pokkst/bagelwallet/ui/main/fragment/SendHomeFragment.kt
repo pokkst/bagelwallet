@@ -34,8 +34,7 @@ class SendHomeFragment : Fragment() {
         root.paste_address_button.setOnClickListener {
             val clipBoard= requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val pasteData = clipBoard.primaryClip?.getItemAt(0)?.text.toString()
-            if(Address.isValidCashAddr(WalletManager.parameters, pasteData) || Address.isValidLegacyAddress(WalletManager.parameters, pasteData)) {
-
+            if(pasteData.contains("http") || Address.isValidCashAddr(WalletManager.parameters, pasteData) || Address.isValidLegacyAddress(WalletManager.parameters, pasteData)) {
                 findNavController().navigate(SendHomeFragmentDirections.navToSend(pasteData))
             }
         }
@@ -48,7 +47,7 @@ class SendHomeFragment : Fragment() {
             if (requestCode == Constants.REQUEST_CODE_SCAN_QR) {
                 if (data != null) {
                     val scanData = data.getStringExtra(Constants.QR_SCAN_RESULT)
-                    if(Address.isValidCashAddr(WalletManager.parameters, scanData) || Address.isValidLegacyAddress(WalletManager.parameters, scanData)) {
+                    if(scanData.contains("http") || Address.isValidCashAddr(WalletManager.parameters, scanData) || Address.isValidLegacyAddress(WalletManager.parameters, scanData)) {
                         findNavController().navigate(SendHomeFragmentDirections.navToSend(scanData))
                     }
                 }
