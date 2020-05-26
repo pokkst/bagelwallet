@@ -1,9 +1,7 @@
 package xyz.pokkst.bagelwallet.ui.main
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.R.attr.label
+import android.content.*
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,15 +9,17 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
-import kotlinx.android.synthetic.main.fragment_main.*
 import net.glxn.qrgen.android.QRCode
 import xyz.pokkst.bagelwallet.R
 import xyz.pokkst.bagelwallet.util.Constants
+import xyz.pokkst.bagelwallet.util.Toaster
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -66,6 +66,12 @@ class MainFragment : Fragment() {
         } else if(page == 2) {
             receiveQr = root.findViewById(R.id.receive_qr)
             receiveText = root.findViewById(R.id.main_address_text)
+            receiveText?.setOnClickListener {
+                copyToClipboard(receiveText?.text.toString())
+            }
+            receiveQr?.setOnClickListener {
+                copyToClipboard(receiveText?.text.toString())
+            }
             sendScreen.visibility = View.GONE
             receiveScreen.visibility = View.VISIBLE
         }
@@ -73,6 +79,12 @@ class MainFragment : Fragment() {
         return root
     }
 
+    private fun copyToClipboard(text: String) {
+        val clipboard: ClipboardManager? = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+        val clip = ClipData.newPlainText("Address", text)
+        clipboard?.setPrimaryClip(clip)
+        Toaster.showToastMessage(requireContext(), "copied")
+    }
     private fun refresh(address: String?) {
         this.generateQR(address)
     }

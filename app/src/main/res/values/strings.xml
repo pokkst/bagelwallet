@@ -141,6 +141,8 @@
     <string name="received_amount">received %1$s (%2$s)</string>
     <!-- checked -->
     <string name="wallet_address">wallet address</string>
+    <string name="op_return_address">null data</string>
+
     <!-- checked -->
     <string name="payment_address">payment address</string>
     <!-- checked -->

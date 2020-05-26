@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.transaction_item_expanded_received.view.*
 import org.bitcoinj.core.*
 import org.bitcoinj.script.Script
 import org.bitcoinj.script.ScriptException
+import org.bitcoinj.script.ScriptPattern
 import xyz.pokkst.bagelwallet.R
 import xyz.pokkst.bagelwallet.util.PriceHelper
 import xyz.pokkst.bagelwallet.wallet.WalletManager
@@ -45,7 +46,12 @@ class TransactionReceivedFragment : Fragment() {
         val toAddresses = ArrayList<String?>()
         val toAmounts = ArrayList<Long>()
         for(x in tx.outputs.indices) {
-            toAddresses.add(tx.outputs[x].scriptPubKey.getToAddress(WalletManager.parameters).toString())
+            if(ScriptPattern.isOpReturn(tx.outputs[x].scriptPubKey)) {
+                toAddresses.add("OP_RETURN")
+            } else {
+                toAddresses.add(tx.outputs[x].scriptPubKey.getToAddress(WalletManager.parameters).toString())
+            }
+
             toAmounts.add(tx.outputs[x].value.value)
         }
 
@@ -114,7 +120,11 @@ class TransactionReceivedFragment : Fragment() {
             //BRAnimator.showCopyBubble(activity, addressBlock, txTo)
             if (addresses[i] != null && !addresses[i]!!.isEmpty()) {
                 txTo.text = addresses[i]
-                txToDescription.text = getString(R.string.wallet_address)
+                if(addresses[i] == "OP_RETURN") {
+                    txToDescription.text = getString(R.string.op_return_address)
+                } else {
+                    txToDescription.text = getString(R.string.wallet_address)
+                }
                 val amountInBch = amounts[i] / 100000000.0
                 val amountInFiat = amountInBch * PriceHelper.price
                 txToAmount.text = resources.getString(R.string.tx_amount_moved, formatBalance(amountInBch, "#.########"))
