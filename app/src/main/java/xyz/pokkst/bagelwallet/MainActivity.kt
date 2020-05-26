@@ -36,8 +36,12 @@ class MainActivity : AppCompatActivity() {
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (Constants.ACTION_UPDATE_RECEIVE_QR == intent.action) {
-                val pct = intent.extras?.getInt("sync")
-                this@MainActivity.refresh(pct)
+                if(intent.extras?.containsKey("sync") == true) {
+                    val pct = intent.extras?.getInt("sync")
+                    this@MainActivity.refresh(pct)
+                } else {
+                    this@MainActivity.refresh()
+                }
             }
         }
     }
@@ -47,13 +51,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val extras = intent.extras
         var seed: String? = null
+        var newUser: Boolean = false
         if (extras != null) {
             seed = extras.getString("seed")
+            newUser = extras.getBoolean("new")
         }
         val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ToggleViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
-        viewPager.currentItem = 2
+        if(newUser) { viewPager.currentItem = 2 }
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
         val settingsButton: ImageView = findViewById(R.id.settings_button)
@@ -96,6 +102,22 @@ class MainActivity : AppCompatActivity() {
         if (sync != null) {
             sync_progress_bar.visibility = if(sync == 100) View.INVISIBLE else View.VISIBLE
             sync_progress_bar.progress = sync
+        }
+    }
+
+    private fun refresh() {
+        if(WalletManager.walletKit?.wallet() != null) {
+            object : Thread() {
+                override fun run() {
+                    super.run()
+                    val bch = WalletManager.getBalance(WalletManager.walletKit?.wallet()!!).toPlainString().toDouble()
+                    val fiat = bch * PriceHelper.price
+                    val fiatStr = formatBalance(fiat, "0.00")
+                    this@MainActivity.runOnUiThread {
+                        appbar_title.text = "${resources.getString(R.string.appbar_title, bch)} ($${fiatStr})"
+                    }
+                }
+            }.start()
         }
     }
 

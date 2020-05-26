@@ -26,17 +26,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="60dp"
                     android:divider="@color/black"
                     android:dividerHeight="1px"
                     android:overScrollFooter="@android:color/transparent" />
+
+                <include
+                    android:id="@+id/more_transactions"
+                    android:visibility="gone"
+                    layout="@layout/transaction_list_item_more"/>
+
+                <Space
+                    android:id="@+id/space"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="60dp"/>
 
                 <TextView
                     android:id="@+id/no_transactions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="50dp"
+                    android:padding="40dp"
                     android:text="@string/no_transactions"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/light_gray"

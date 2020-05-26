@@ -33,10 +33,10 @@ class WalletManager {
                     wallet().isAcceptRiskyTransactions = true
                     refresh(activity, 0)
                     wallet().addCoinsReceivedEventListener { wallet, tx, prevBalance, newBalance ->
-                        refresh(activity, null)
+                        refresh(activity)
                     }
                     wallet().addCoinsSentEventListener { wallet, tx, prevBalance, newBalance ->
-                        refresh(activity, null)
+                        refresh(activity)
                     }
                 }
             }
@@ -83,6 +83,12 @@ class WalletManager {
             val intent = Intent(Constants.ACTION_UPDATE_RECEIVE_QR)
             intent.putExtra("address", walletKit?.wallet()?.currentReceiveAddress()?.legacyAddress?.toBase58())
             intent.putExtra("sync", sync)
+            LocalBroadcastManager.getInstance(activity).sendBroadcast(intent)
+        }
+
+        fun refresh(activity: Activity) {
+            val intent = Intent(Constants.ACTION_UPDATE_RECEIVE_QR)
+            intent.putExtra("address", walletKit?.wallet()?.currentReceiveAddress()?.legacyAddress?.toBase58())
             LocalBroadcastManager.getInstance(activity).sendBroadcast(intent)
         }
     }

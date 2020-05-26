@@ -2,13 +2,14 @@ package xyz.pokkst.bagelwallet.util
 
 class PriceHelper {
     companion object {
-        private val lastChecked = System.currentTimeMillis() / 1000L
+        private var lastChecked = 0L
         private var cachedPrice = 0.0
         val price: Double
             get() {
                 val currentTime = System.currentTimeMillis() / 1000L
                 return if(cachedPrice == 0.0 || currentTime - lastChecked >= 300L) {
                     println("Fetching new price data...")
+                    lastChecked = System.currentTimeMillis() / 1000L
                     cachedPrice = readPriceFromUrl("https://api.cryptowat.ch/markets/coinbase-pro/bchusd/price")
                     cachedPrice
                 } else {

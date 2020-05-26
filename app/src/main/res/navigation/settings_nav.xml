@@ -32,6 +32,10 @@
                 android:name="txid"
                 app:argType="string" />
         </action>
+        <action
+            android:id="@+id/nav_to_tx_list"
+            app:destination="@id/transactionsListFragment">
+        </action>
     </fragment>
     <fragment
         android:id="@+id/settingsAboutFragment"
@@ -62,5 +66,25 @@
         android:name="xyz.pokkst.bagelwallet.ui.main.fragment.TransactionSentFragment"
         android:label="fragment_tx_received"
         tools:layout="@layout/transaction_item_expanded_sent">
+    </fragment>
+    <fragment
+        android:id="@+id/transactionsListFragment"
+        android:name="xyz.pokkst.bagelwallet.ui.main.fragment.SettingsTransactionsFragment"
+        android:label="fragment_tx_received"
+        tools:layout="@layout/fragment_settings_transactions">
+        <action
+            android:id="@+id/nav_to_tx_received"
+            app:destination="@id/transactionReceivedFragment">
+            <argument
+                android:name="txid"
+                app:argType="string" />
+        </action>
+        <action
+            android:id="@+id/nav_to_tx_sent"
+            app:destination="@id/transactionSentFragment">
+            <argument
+                android:name="txid"
+                app:argType="string" />
+        </action>
     </fragment>
 </navigation>

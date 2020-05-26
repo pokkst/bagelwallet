@@ -30,7 +30,7 @@ import java.util.*
 
 
 class SettingsActivity : AppCompatActivity() {
-    var inDeepMenu = false
+    var deepMenuCount = 0
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (Constants.ACTION_SETTINGS_HIDE_BAR == intent.action) {
@@ -45,9 +45,8 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         val settingsButton: ImageView = findViewById(R.id.settings_button)
         settingsButton.setOnClickListener {
-            if(inDeepMenu) {
+            if(deepMenuCount > 0) {
                 onBackPressed()
-                showRootMenuBar()
             } else {
                 finish()
             }
@@ -61,14 +60,29 @@ class SettingsActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if(deepMenuCount > 0)
+            handleDeepMenu()
+    }
+
+    private fun handleDeepMenu() {
+        deepMenuCount--
+
+        if(deepMenuCount <= 0) {
+            deepMenuCount = 0
+            showRootMenuBar()
+        }
+    }
     private fun showDeepMenuBar() {
-        inDeepMenu = true
+        deepMenuCount++
         appbar_title.text = resources.getString(R.string.app_name)
         settings_button.setImageResource(R.drawable.navigationback)
     }
 
     private fun showRootMenuBar() {
-        inDeepMenu = false
+        deepMenuCount = 0
         object : Thread() {
             override fun run() {
                 if(WalletManager.walletKit?.wallet() != null) {

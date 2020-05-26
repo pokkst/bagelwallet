@@ -57,6 +57,7 @@ class GeneratedSeedFragment : Fragment() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             println(seedStr)
             intent.putExtra("seed", seedStr)
+            intent.putExtra("new", true)
             startActivity(intent)
         }
         return root

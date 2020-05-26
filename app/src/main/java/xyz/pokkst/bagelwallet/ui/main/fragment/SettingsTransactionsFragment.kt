@@ -11,16 +11,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_settings_home.view.*
+import kotlinx.android.synthetic.main.fragment_settings_transactions.view.*
 import org.bitcoinj.core.Sha256Hash
-import org.bitcoinj.wallet.DeterministicSeed
 import org.bitcoinj.wallet.Wallet
 import xyz.pokkst.bagelwallet.R
 import xyz.pokkst.bagelwallet.util.Constants
 import xyz.pokkst.bagelwallet.util.DateFormatter
 import xyz.pokkst.bagelwallet.util.PriceHelper
 import xyz.pokkst.bagelwallet.wallet.WalletManager
-import java.security.SecureRandom
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -31,53 +29,27 @@ import kotlin.collections.HashMap
 /**
  * A placeholder fragment containing a simple view.
  */
-class SettingsHomeFragment : Fragment() {
+class SettingsTransactionsFragment : Fragment() {
     private var sentColor = 0
     private var receivedColor = 0
     private var txList = ArrayList<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val root = inflater.inflate(R.layout.fragment_settings_home, container, false)
+        val root = inflater.inflate(R.layout.fragment_settings_transactions, container, false)
         sentColor = Color.parseColor("#FF5454")
         receivedColor = Color.parseColor("#00BF00")
         this.setArrayAdapter(root, WalletManager.walletKit?.wallet())
-
-        root.about.setOnClickListener {
-            val intent = Intent(Constants.ACTION_SETTINGS_HIDE_BAR)
-            LocalBroadcastManager.getInstance(requireActivity()).sendBroadcast(intent)
-            findNavController().navigate(R.id.nav_to_about)
-        }
-
-        root.recovery_phrase.setOnClickListener {
-            val intent = Intent(Constants.ACTION_SETTINGS_HIDE_BAR)
-            LocalBroadcastManager.getInstance(requireActivity()).sendBroadcast(intent)
-            findNavController().navigate(R.id.nav_to_phrase)
-        }
-
-        root.start_recovery_wallet.setOnClickListener {
-            val intent = Intent(Constants.ACTION_SETTINGS_HIDE_BAR)
-            LocalBroadcastManager.getInstance(requireActivity()).sendBroadcast(intent)
-            findNavController().navigate(R.id.nav_to_wipe)
-        }
-
         root.transactions_list.setOnItemClickListener { parent, view, position, id ->
             val intent = Intent(Constants.ACTION_SETTINGS_HIDE_BAR)
             LocalBroadcastManager.getInstance(requireActivity()).sendBroadcast(intent)
             val txid = txList[position]
             val amount = WalletManager.walletKit?.wallet()?.getTransaction(Sha256Hash.wrap(txid))?.getValue(WalletManager.walletKit?.wallet())
             if(amount?.isPositive!!) {
-                findNavController().navigate(SettingsHomeFragmentDirections.navToTxReceived(txid))
+                findNavController().navigate(SettingsTransactionsFragmentDirections.navToTxReceived(txid))
             } else if(amount.isNegative) {
-                findNavController().navigate(SettingsHomeFragmentDirections.navToTxSent(txid))
+                findNavController().navigate(SettingsTransactionsFragmentDirections.navToTxSent(txid))
             }
         }
-
-        root.more_transactions.setOnClickListener {
-            val intent = Intent(Constants.ACTION_SETTINGS_HIDE_BAR)
-            LocalBroadcastManager.getInstance(requireActivity()).sendBroadcast(intent)
-            findNavController().navigate(R.id.nav_to_tx_list)
-        }
-
         return root
     }
 
@@ -89,19 +61,13 @@ class SettingsHomeFragment : Fragment() {
         object : Thread() {
             override fun run() {
                 if (wallet != null) {
-                    val txListFromWallet = wallet.getRecentTransactions(5, false)
-                    val actualTxCount = wallet.getRecentTransactions(0, false).size
+                    val txListFromWallet = wallet.getRecentTransactions(0, false)
                     txList = ArrayList<String>()
 
                     if (txListFromWallet != null && txListFromWallet.size != 0) {
                         val txListFormatted = ArrayList<Map<String, String>>()
 
                         if (txListFromWallet.size > 0) {
-                            requireActivity().runOnUiThread {
-                                if(actualTxCount > 5) { root.more_transactions.visibility = View.VISIBLE }
-                                root.no_transactions.visibility = View.GONE
-                            }
-
                             for (x in 0 until txListFromWallet.size) {
                                 val tx = txListFromWallet[x]
                                 val confirmations = tx.confidence.depthInBlocks
@@ -159,18 +125,6 @@ class SettingsHomeFragment : Fragment() {
                                 }
                             }
                             requireActivity().runOnUiThread { root.transactions_list.adapter = itemsAdapter }
-                        } else {
-                            requireActivity().runOnUiThread {
-                                root.space.visibility = View.GONE
-                                root.transactions_list.visibility = View.GONE
-                                root.no_transactions.visibility = View.VISIBLE
-                            }
-                        }
-                    } else {
-                        requireActivity().runOnUiThread {
-                            root.space.visibility = View.GONE
-                            root.transactions_list.visibility = View.GONE
-                            root.no_transactions.visibility = View.VISIBLE
                         }
                     }
                 }

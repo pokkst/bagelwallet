@@ -356,4 +356,6 @@
     <string name="tx_amount_moved">&#384;%1$s</string>
     <string name="b_symbol">&#384;</string>
     <string name="fiat_symbol">$</string>
+    <string name="appbar_temp">&#384;0.000000 ($0.00)</string>
+
 </resources>

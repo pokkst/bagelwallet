@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/appbar_padding"
-        android:text="@string/app_name"
+        android:text="@string/appbar_temp"
         android:gravity="center"
         android:background="#fff"
         android:layout_gravity="center"
