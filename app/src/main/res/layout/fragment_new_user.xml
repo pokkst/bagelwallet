@@ -8,7 +8,7 @@
     tools:context=".ui.main.fragment.NewUserFragment">
 
     <include
-        layout="@layout/fragment_intro_bg"/>
+        layout="@layout/fragment_intro_bg_no_back"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

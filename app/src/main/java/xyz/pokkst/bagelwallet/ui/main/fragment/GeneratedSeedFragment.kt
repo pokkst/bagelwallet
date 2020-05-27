@@ -60,6 +60,11 @@ class GeneratedSeedFragment : Fragment() {
             intent.putExtra("new", true)
             startActivity(intent)
         }
+
+        root.back_button.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         return root
     }
 }

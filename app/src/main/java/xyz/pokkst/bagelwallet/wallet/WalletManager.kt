@@ -23,7 +23,7 @@ class WalletManager {
         var walletKit: WalletAppKit? = null
         val parameters: NetworkParameters = MainNetParams.get()
         private val walletFileName = "bagelwallet"
-        fun startWallet(activity: Activity, seed: String?) {
+        fun startWallet(activity: Activity, seed: String?, newUser: Boolean) {
             walletDir = File(activity.applicationInfo.dataDir)
             setBitcoinSDKThread()
 
@@ -56,8 +56,9 @@ class WalletManager {
                 }
             })
 
+            val creationDate = if(newUser) System.currentTimeMillis() / 1000L else 1554163098L
             if (seed != null) {
-                val deterministicSeed = DeterministicSeed(seed, null, "", 1554163098L)
+                val deterministicSeed = DeterministicSeed(seed, null, "", creationDate)
                 walletKit?.restoreWalletFromSeed(deterministicSeed)
             }
 

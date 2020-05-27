@@ -8,7 +8,7 @@
     tools:context=".ui.main.fragment.NewWalletFragment">
 
     <include
-        layout="@layout/fragment_intro_bg"/>
+        layout="@layout/fragment_intro_bg_gray"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

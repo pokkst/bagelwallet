@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         filter.addAction(Constants.ACTION_UPDATE_RECEIVE_QR)
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter)
 
-        WalletManager.startWallet(this, seed)
+        WalletManager.startWallet(this, seed, newUser)
     }
 
     private fun refresh(sync: Int?) {

@@ -15,6 +15,8 @@
     <item name="almost_black" type="color">#303030</item>
     <item name="dark_blue" type="color">#2893ff</item>
     <item name="wallet_green" type="color">#0F894B</item>
+    <item name="bch_green" type="color">#22cc76</item>
+    <item name="bch_green_dark" type="color">#0B341F</item>
     <item name="white_trans" type="color">#77ffffff</item>
     <item name="black_trans" type="color">#b5000000</item>
     <item name="red_text" type="color">#FF5454</item>
